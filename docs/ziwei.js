@@ -208,16 +208,24 @@ function zwDisplay(palaces, year, month, day, hour, gender, lunar, wxjName, ziwe
   info += `<p><span>命宮：</span>${palaces[0].branch} | <span>身宮：</span>${palaces.find(p=>p.isShen)?.branch||''}</p>`;
   document.getElementById('zwInfo').innerHTML = info;
 
-  // 命盤格位
-  const cells = [
-    {r:1,c:1,p:5},{r:1,c:2,p:6},{r:1,c:3,p:7},{r:1,c:4,p:8},
-    {r:2,c:1,p:4},{center:true},{r:2,c:4,p:9},
-    {r:3,c:1,p:3},{r:3,c:4,p:10},
-    {r:4,c:1,p:2},{r:4,c:2,p:1},{r:4,c:3,p:0},{r:4,c:4,p:11}
+  // 建立地支→宮位對照表
+  const palaceByBranch = {};
+  palaces.forEach(p => { palaceByBranch[p.branch] = p; });
+
+  // 命盤格位 - 固定格子對應固定地支
+  // 巳(5) 午(6) 未(7) 申(8)
+  // 辰(4) [中心]    酉(9)
+  // 卯(3) [中心]    戌(10)
+  // 寅(2) 丑(1) 子(0) 亥(11)
+  const gridLayout = [
+    {r:1,c:1,br:5},{r:1,c:2,br:6},{r:1,c:3,br:7},{r:1,c:4,br:8},
+    {r:2,c:1,br:4},{center:true},{r:2,c:4,br:9},
+    {r:3,c:1,br:3},{r:3,c:4,br:10},
+    {r:4,c:1,br:2},{r:4,c:2,br:1},{r:4,c:3,br:0},{r:4,c:4,br:11}
   ];
 
   let html = '';
-  for (const cell of cells) {
+  for (const cell of gridLayout) {
     if (cell.center) {
       html += `<div class="zw-center" style="grid-row:2/4;grid-column:2/3"><div class="zw-center-inner">
         <div class="zw-center-title">${lunar.ganzhi}</div>
@@ -229,7 +237,10 @@ function zwDisplay(palaces, year, month, day, hour, gender, lunar, wxjName, ziwe
       </div></div>`;
       continue;
     }
-    const p = palaces[cell.p];
+    const branchName = ZW_BRANCH[cell.br];
+    const p = palaceByBranch[branchName];
+    if (!p) continue;
+
     let starHtml = '';
     for (const s of p.stars) {
       const cls = s.type === 'main' ? 'zw-sm' : 'zw-sa';
@@ -238,7 +249,7 @@ function zwDisplay(palaces, year, month, day, hour, gender, lunar, wxjName, ziwe
     const tag = p.isMing ? '<span class="zw-tag">命</span>' : p.isShen ? '<span class="zw-tag">身</span>' : '';
     html += `<div class="zw-cell${p.isMing?' zw-ming':''}" style="grid-row:${cell.r};grid-column:${cell.c}">
       <div class="zw-cell-name">${p.name}${tag}</div>
-      <div class="zw-cell-br">${p.branch}</div>
+      <div class="zw-cell-br">${branchName}</div>
       <div class="zw-cell-stars">${starHtml || '<span class="zw-empty">—</span>'}</div>
     </div>`;
   }
