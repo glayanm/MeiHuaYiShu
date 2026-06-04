@@ -89,8 +89,11 @@ function zwCalculate(){
   const gender=document.getElementById('zwGender').value;
   const lunar=Lunar.solarToLunar(year,month,day);
   const gan=(year-4)%10;
-  const mingBranch=(13-lunar.month-hour+24)%12;
-  const shenBranch=(13-lunar.month+hour)%12;
+  // 命宮公式: (13-農曆月-時辰)%12
+  // 點選時辰時自動-1以對齊 click108/劍靈 的時辰定義
+  const hAdj = (hour - 1 + 12) % 12;
+  const mingBranch=(13-lunar.month-hAdj+24)%12;
+  const shenBranch=(13-lunar.month+hAdj)%12;
   const wxj=ZW_WXJ[mingBranch][gan];
   const ziweiPos=ZW_ZIWEI_POS[wxj][Math.min(lunar.day-1,29)];
   const zwg=ZW_ZW_GROUP[ziweiPos];
