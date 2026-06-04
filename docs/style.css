@@ -119,11 +119,12 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--t1);
 /* ===== ZIWEI ===== */
 .zw-container{max-width:750px;margin:0 auto}
 .zw-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,auto);gap:2px;background:rgba(201,169,110,.25);border:2px solid rgba(201,169,110,.3);border-radius:8px;overflow:hidden;margin-bottom:20px}
-.zw-cell{background:var(--card);padding:8px;min-height:100px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.zw-cell{background:var(--card);padding:8px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .zw-cell.zw-ming{box-shadow:inset 0 0 0 2px var(--gold)}
-.zw-center{grid-area:2/2/4/3;background:rgba(201,169,110,.06);border:1px dashed rgba(201,169,110,.2);display:flex;align-items:center;justify-content:center;padding:10px}
+.zw-center{background:rgba(201,169,110,.06);border:1px dashed rgba(201,169,110,.2);display:flex;align-items:center;justify-content:center;padding:10px}
 .zw-center-inner{font-size:.72rem;color:var(--t1);line-height:1.8;text-align:center}
 .zw-center-title{font-family:'Noto Serif TC',serif;font-size:.95rem;color:var(--gold);font-weight:700;margin-bottom:4px}
+.zw-empty-cell{background:transparent}
 .zw-cell-name{font-size:.72rem;color:var(--gold);font-weight:700;margin-bottom:2px}
 .zw-cell-br{font-size:.65rem;color:var(--t2);margin-bottom:3px}
 .zw-cell-stars{line-height:1.4}

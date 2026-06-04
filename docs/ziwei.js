@@ -145,36 +145,40 @@ function zwDisplay(palaces,year,month,day,hour,gender,lunar,wxjName,ziweiPos,min
   info+=`<p><span>命宮：</span>${ZW_BRANCH[mingBranch]} | <span>身宮：</span>${ZW_BRANCH[shenBranch]}</p>`;
   document.getElementById('zwInfo').innerHTML=info;
 
-  // 命盤格位
-  const posMap=[5,6,7,8,4,-1,9,-1,3,-1,10,-1,2,1,0,11];
+  // 命盤格位 - 明確指定每個格子的 grid-row/grid-column
+  //   (1,1)巳 (1,2)午 (1,3)未 (1,4)申
+  //   (2,1)辰 (2,2)中心 (3,2)中心 (2,4)酉
+  //   (3,1)卯          (3,4)戌
+  //   (4,1)寅 (4,2)丑 (4,3)子 (4,4)亥
+  const cells=[
+    {pal:5,r:1,c:1},{pal:6,r:1,c:2},{pal:7,r:1,c:3},{pal:8,r:1,c:4},
+    {pal:4,r:2,c:1},{center:true,r:2,c:2},{pal:9,r:2,c:4},
+    {pal:3,r:3,c:1},{pal:10,r:3,c:4},
+    {pal:2,r:4,c:1},{pal:1,r:4,c:2},{pal:0,r:4,c:3},{pal:11,r:4,c:4}
+  ];
+
   let html='';
-  for(let i=0;i<16;i++){
-    const idx=posMap[i];
-    if(idx===-1){
-      if(i===5){
-        html+=`<div class="zw-center" style="grid-area:2/2/4/3"><div class="zw-center-inner">
-          <div class="zw-center-title">${lunar.ganzhi}</div>
-          <div>${wxjName}</div>
-          <div>${gender==='M'?'男':'女'}命</div>
-          <div>命宮：${ZW_BRANCH[mingBranch]}</div>
-          <div>身宮：${ZW_BRANCH[shenBranch]}</div>
-          <div>紫微在${ZW_BRANCH[ziweiPos]}</div>
-        </div></div>`;
-      }
+  for(const cell of cells){
+    if(cell.center){
+      html+=`<div class="zw-center" style="grid-row:2/4;grid-column:2/3"><div class="zw-center-inner">
+        <div class="zw-center-title">${lunar.ganzhi}</div>
+        <div>${wxjName}</div>
+        <div>${gender==='M'?'男':'女'}命</div>
+        <div>命宮：${ZW_BRANCH[mingBranch]}</div>
+        <div>身宮：${ZW_BRANCH[shenBranch]}</div>
+        <div>紫微在${ZW_BRANCH[ziweiPos]}</div>
+      </div></div>`;
       continue;
     }
-    const p=palaces[idx];
+    const p=palaces[cell.pal];
     let starHtml='';
     for(const s of p.stars){
       const briClass=zwBriClass(s.bri);
-      if(s.type==='main'){
-        starHtml+=`<div class="zw-s-main"><span class="zw-s-name zw-sm">${s.name}</span><span class="zw-s-bri ${briClass}">${s.bri}</span></div>`;
-      }else{
-        starHtml+=`<div class="zw-s-main"><span class="zw-s-name zw-sa">${s.name}</span><span class="zw-s-bri ${briClass}">${s.bri}</span></div>`;
-      }
+      const nameClass=s.type==='main'?'zw-sm':'zw-sa';
+      starHtml+=`<div class="zw-s-main"><span class="zw-s-name ${nameClass}">${s.name}</span><span class="zw-s-bri ${briClass}">${s.bri}</span></div>`;
     }
     const tag=p.isMing?'<span class="zw-tag">命</span>':p.isShen?'<span class="zw-tag">身</span>':'';
-    html+=`<div class="zw-cell${p.isMing?' zw-ming':''}"><div class="zw-cell-name">${p.name}${tag}</div><div class="zw-cell-br">${p.branch}</div><div class="zw-cell-stars">${starHtml||'<span class="zw-empty">—</span>'}</div></div>`;
+    html+=`<div class="zw-cell${p.isMing?' zw-ming':''}" style="grid-row:${cell.r};grid-column:${cell.c}"><div class="zw-cell-name">${p.name}${tag}</div><div class="zw-cell-br">${p.branch}</div><div class="zw-cell-stars">${starHtml||'<span class="zw-empty">—</span>'}</div></div>`;
   }
   document.getElementById('zwGrid').innerHTML=html;
 
