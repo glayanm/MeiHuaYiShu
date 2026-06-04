@@ -1,5 +1,10 @@
 const JG_LOSHU=[4,9,2,3,5,7,8,1,6];
-const JG_DIRS=['東南','南','西南','東','中','西','東北','北','西北'];
+// 現代地圖方位：北在上，南在下
+// 舊洛書位置 → 新位置：把每個星放到正確的方位格子
+// 洛書: [0]=4巽東南 [1]=9離南 [2]=2坤西南 [3]=3震東 [4]=5中 [5]=7兌西 [6]=8艮東北 [7]=1坎北 [8]=6乾西北
+// 新格: [0]=西北 [1]=北  [2]=東北 [3]=西  [4]=中 [5]=東  [6]=西南 [7]=南  [8]=東南
+const JG_REMAP=[7,6,8,4,0,3,1,5,2]; // 新位置i → 舊洛書位置JG_REMAP[i]
+const JG_DIRS=['西北','北','東北','西','中','東','西南','南','東南'];
 const JG_NAMES={1:'一白貪狼',2:'二黑巨門',3:'三碧祿存',4:'四綠文曲',5:'五黃廉貞',6:'六白武曲',7:'七赤破軍',8:'八白左輔',9:'九紫右弼'};
 const JG_NATURE={1:'水·吉',2:'土·凶',3:'木·凶',4:'木·吉',5:'土·大凶',6:'金·吉',7:'金·凶',8:'土·大吉',9:'火·大吉'};
 const JG_MEANING={
@@ -109,20 +114,19 @@ const JG_JX_COLOR={1:'var(--good)',2:'var(--bad)',3:'var(--bad)',4:'var(--good)'
 
 function renderJgGrid(grid){
   const g=document.getElementById('jgGrid');
-  const loShuOrder=[3,8,1,2,4,6,7,0,5];
   let html='';
   for(let i=0;i<9;i++){
-    const idx=loShuOrder[i];
-    const star=grid[idx];
+    const oldIdx=JG_REMAP[i]; // 新位置i → 舊洛書位置
+    const star=grid[oldIdx];
     const m=JG_MEANING[star];
     const jx=JG_JIXIONG[star];
     const jxColor=JG_JX_COLOR[star];
-    const isCenter=idx===4;
+    const isCenter=i===4;
     html+=`<div class="jg-cell${isCenter?' highlight':''}">
       <div class="jg-cell-top"><span class="jg-cell-jx" style="color:${jxColor}">${jx}</span></div>
       <div class="jg-cell-num" style="color:${m.color}">${star}</div>
       <div class="jg-cell-name">${JG_NAMES[star]}</div>
-      <div class="jg-cell-dir">${JG_DIRS[idx]}</div>
+      <div class="jg-cell-dir">${JG_DIRS[i]}</div>
       <div class="jg-cell-type">${JG_NATURE[star]}</div>
     </div>`;
   }
