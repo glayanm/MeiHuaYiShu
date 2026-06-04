@@ -307,7 +307,8 @@ function zwDisplay(palaces, year, month, day, hour, gender, lunar, wxjName, ziwe
 
   let info = `<p><span>出生：</span>${year}年${month}月${day}日 ${ZW_HOUR_NAMES[hour]}時 | <span>農曆：</span>${lunar.ganzhi} ${lunar.monthName} ${lunar.dayName}</p>`;
   info += `<p><span>性別：</span>${gender==='M'?'男':'女'} | <span>五行局：</span>${wxjName} | <span>紫微：</span>${ZW_BRANCH[(ziweiIdx+2)%12]} | <span>天府：</span>${ZW_BRANCH[(tianfuIdx+2)%12]}</p>`;
-  info += `<p><span>命宮：</span>${palaces[0].branch} | <span>身宮：</span>${palaces.find(p=>p.isShen)?.branch||''}</p>`;
+  const shenPalace = palaces.find(function(p){return p.isShen});
+  info += `<p><span>命宮：</span>${palaces[0].branch} | <span>身宮：</span>${shenPalace?shenPalace.branch:''}</p>`;
   document.getElementById('zwInfo').innerHTML = info;
 
   // 建立地支→宮位對照表
@@ -334,7 +335,7 @@ function zwDisplay(palaces, year, month, day, hour, gender, lunar, wxjName, ziwe
         <div>${wxjName}</div>
         <div>${gender==='M'?'男':'女'}命</div>
         <div>命宮：${palaces[0].branch}</div>
-        <div>身宮：${palaces.find(p=>p.isShen)?.branch||''}</div>
+        <div>身宮：${shenPalace?shenPalace.branch:''}</div>
         <div>紫微：${ZW_BRANCH[(ziweiIdx+2)%12]}</div>
       </div></div>`;
       continue;
