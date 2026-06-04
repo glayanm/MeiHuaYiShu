@@ -104,20 +104,26 @@ function jgRender(){
   renderJgAnalysis(grid,mode,year);
 }
 
+const JG_JIXIONG={1:'吉',2:'凶',3:'凶',4:'吉',5:'大凶',6:'吉',7:'凶',8:'大吉',9:'大吉'};
+const JG_JX_COLOR={1:'var(--good)',2:'var(--bad)',3:'var(--bad)',4:'var(--good)',5:'var(--bad)',6:'var(--good)',7:'var(--bad)',8:'var(--good)',9:'var(--good)'};
+
 function renderJgGrid(grid){
   const g=document.getElementById('jgGrid');
-  // 洛書排列：4 9 2 / 3 5 7 / 8 1 6
-  const loShuOrder=[3,8,1,2,4,6,7,0,5]; // 從左上到右下的格子索引
+  const loShuOrder=[3,8,1,2,4,6,7,0,5];
   let html='';
   for(let i=0;i<9;i++){
     const idx=loShuOrder[i];
     const star=grid[idx];
     const m=JG_MEANING[star];
+    const jx=JG_JIXIONG[star];
+    const jxColor=JG_JX_COLOR[star];
     const isCenter=idx===4;
     html+=`<div class="jg-cell${isCenter?' highlight':''}">
+      <div class="jg-cell-top"><span class="jg-cell-jx" style="color:${jxColor}">${jx}</span></div>
       <div class="jg-cell-num" style="color:${m.color}">${star}</div>
       <div class="jg-cell-name">${JG_NAMES[star]}</div>
       <div class="jg-cell-dir">${JG_DIRS[idx]}</div>
+      <div class="jg-cell-type">${JG_NATURE[star]}</div>
     </div>`;
   }
   g.innerHTML=html;
