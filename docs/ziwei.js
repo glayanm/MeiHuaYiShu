@@ -128,7 +128,7 @@ function placeMinorStars(lunarMonth, timeIdx, yearGan, yearZhiIdx, soulIndex, bo
   if (yuedeTable[yearGan]) stars[BR[yuedeTable[yearGan]]].push({name:'月德', type:'helper'});
 
   // 紅鸞天喜（按年支）
-  const hongluanIdx = (3 - yearZhi + 12) % 12; // 卯起子逆數
+  const hongluanIdx = (3 - yearZhiIdx + 12) % 12; // 卯起子逆數
   const tianxiIdx = (hongluanIdx + 6) % 12;
   stars[hongluanIdx].push({name:'紅鸞', type:'flower'});
   stars[tianxiIdx].push({name:'天喜', type:'flower'});
