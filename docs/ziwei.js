@@ -75,7 +75,8 @@ function placeMajorStars(ziweiIdx, tianfuIdx) {
     if (s) stars[(ziweiIdx - i + 12) % 12].push({name:s, type:'main'});
   });
 
-  // 天府星系（順時針）
+  // 天府星系（順時針）- iztro 原始算法
+  // 天府+1=太陰, +2=貪狼, +3=巨門, +4=天相, +5=天梁, +6=七殺, +10=破軍
   const tfGroup = ['天府','太陰','貪狼','巨門','天相','天梁','七殺','','','','破軍'];
   tfGroup.forEach((s, i) => {
     if (s) stars[(tianfuIdx + i) % 12].push({name:s, type:'main'});
@@ -155,17 +156,27 @@ function zwCalculate() {
   // 安輔星
   const minorStars = placeMinorStars(lunar.month, hour, yearGan, yearZhi, soulIndex, bodyIndex);
 
-  // 合併星曜
+  // 合併星曜 - 主星用寅宮基準，宮位用命宮基準，需轉換
   const palaces = [];
   for (let i = 0; i < 12; i++) {
     const br = (soulIndex + i + 2) % 12; // 命宮起，對應到地支
-    const stars = [...majorStars[i], ...minorStars[i]];
+    // 轉換：寅宮基準的星曜索引 → 命宮基準的宮位索引
+    const convertedMajor = [];
+    majorStars.forEach((starList, starIdx) => {
+      const palaceIdx = ((starIdx - soulIndex) % 12 + 12) % 12;
+      if (palaceIdx === i) convertedMajor.push(...starList);
+    });
+    const convertedMinor = [];
+    minorStars.forEach((starList, starIdx) => {
+      const palaceIdx = ((starIdx - soulIndex) % 12 + 12) % 12;
+      if (palaceIdx === i) convertedMinor.push(...starList);
+    });
     palaces.push({
       name: ZW_PALACE[i],
       branch: ZW_BRANCH[br],
-      stars,
+      stars: [...convertedMajor, ...convertedMinor],
       isMing: i === 0,
-      isShen: i === (bodyIndex - soulIndex + 12) % 12
+      isShen: i === ((bodyIndex - soulIndex) % 12 + 12) % 12
     });
   }
 
