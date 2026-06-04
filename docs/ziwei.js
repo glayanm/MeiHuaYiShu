@@ -89,8 +89,10 @@ function zwCalculate(){
   const gender=document.getElementById('zwGender').value;
   const lunar=Lunar.solarToLunar(year,month,day);
   const gan=(year-4)%10;
-  const mingBranch=(13-lunar.month-hour+24)%12;
-  const shenBranch=(13-lunar.month+hour)%12;
+  // 命宮: 和 click108/劍靈 對齊，時辰索引=1~12（子時=1）
+  const mingBranch=(14-lunar.month-hour+24)%12;
+  // 身宮: (12+month+hour-1)%12
+  const shenBranch=(12+lunar.month+hour-1)%12;
   const wxj=ZW_WXJ[mingBranch][gan];
   const ziweiPos=ZW_ZIWEI_POS[wxj][Math.min(lunar.day-1,29)];
   const zwg=ZW_ZW_GROUP[ziweiPos];
