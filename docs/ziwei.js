@@ -85,7 +85,7 @@ function placeMajorStars(ziweiIdx, tianfuIdx) {
   return stars;
 }
 
-function placeMinorStars(lunarMonth, timeIdx, yearGan, yearZhi, soulIndex, bodyIndex) {
+function placeMinorStars(lunarMonth, timeIdx, yearGan, yearZhiIdx, soulIndex, bodyIndex) {
   const stars = Array.from({length:12}, () => []);
 
   // 左輔右弼（按月）
@@ -142,7 +142,7 @@ function placeMinorStars(lunarMonth, timeIdx, yearGan, yearZhi, soulIndex, bodyI
   // 華蓋咸池（按年支）
   const hgTable = {'寅':10,'午':10,'戌':10,'申':4,'子':4,'辰':4,'巳':1,'丑':1,'酉':1,'亥':7,'卯':7,'未':7};
   const xcTable = {'寅':3,'午':3,'戌':3,'申':9,'子':9,'辰':9,'巳':6,'丑':6,'酉':6,'亥':0,'卯':0,'未':0};
-  const yz = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'][yearZhi];
+  const yz = ZW_BRANCH[yearZhiIdx];
   if (hgTable[yz] !== undefined) stars[hgTable[yz]].push({name:'華蓋', type:'adjective'});
   if (xcTable[yz] !== undefined) stars[xcTable[yz]].push({name:'咸池', type:'flower'});
 
@@ -157,16 +157,16 @@ function placeMinorStars(lunarMonth, timeIdx, yearGan, yearZhi, soulIndex, bodyI
   if (maTable[yz] !== undefined) stars[maTable[yz]].push({name:'天馬', type:'adjective'});
 
   // 龍池鳳閣（按年支）
-  stars[(4 + yearZhi) % 12].push({name:'龍池', type:'adjective'});
-  stars[(10 - yearZhi + 12) % 12].push({name:'鳳閣', type:'adjective'});
+  stars[(4 + yearZhiIdx) % 12].push({name:'龍池', type:'adjective'});
+  stars[(10 - yearZhiIdx + 12) % 12].push({name:'鳳閣', type:'adjective'});
 
   // 天哭天虛（按年支）
-  stars[(6 - yearZhi + 12) % 12].push({name:'天哭', type:'adjective'});
-  stars[(6 + yearZhi) % 12].push({name:'天虛', type:'adjective'});
+  stars[(6 - yearZhiIdx + 12) % 12].push({name:'天哭', type:'adjective'});
+  stars[(6 + yearZhiIdx) % 12].push({name:'天虛', type:'adjective'});
 
   // 天才天壽（按命宮、身宮 + 年支）
-  stars[(soulIndex + yearZhi) % 12].push({name:'天才', type:'adjective'});
-  stars[(bodyIndex + yearZhi) % 12].push({name:'天壽', type:'adjective'});
+  stars[(soulIndex + yearZhiIdx) % 12].push({name:'天才', type:'adjective'});
+  stars[(bodyIndex + yearZhiIdx) % 12].push({name:'天壽', type:'adjective'});
 
   return stars;
 }
@@ -197,6 +197,7 @@ function zwCalculate() {
   const lunar = Lunar.solarToLunar(year, month, day);
   const yearGan = lunar.yearGan;
   const yearZhi = lunar.yearZhi;
+  const yearZhiIdx = ZW_BRANCH.indexOf(yearZhi); // 字串轉索引
 
   // 命宮身宮
   const soulIndex = calcSoulIndex(lunar.month, hour);
@@ -216,7 +217,7 @@ function zwCalculate() {
   const majorStars = placeMajorStars(ziweiIdx, tianfuIdx);
 
   // 安輔星
-  const minorStars = placeMinorStars(lunar.month, hour, yearGan, yearZhi, soulIndex, bodyIndex);
+  const minorStars = placeMinorStars(lunar.month, hour, yearGan, yearZhiIdx, soulIndex, bodyIndex);
 
   // 合併星曜 - 主星用寅宮基準，宮位用命宮基準，需轉換
   const palaces = [];
