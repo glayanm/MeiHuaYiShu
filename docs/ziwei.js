@@ -120,10 +120,72 @@ function placeMinorStars(lunarMonth, timeIdx, yearGan, yearZhi, soulIndex, bodyI
   stars[(hai - timeIdx + 12) % 12].push({name:'地空', type:'aux'});
   stars[(hai + timeIdx) % 12].push({name:'地劫', type:'aux'});
 
+  // 天德月德（按年干）
+  const tiandeTable = {'甲':'酉','乙':'申','丙':'子','丁':'亥','戊':'寅','己':'卯','庚':'午','辛':'巳','壬':'未','癸':'丑'};
+  const yuedeTable =  {'甲':'巳','乙':'午','丙':'未','丁':'申','戊':'酉','己':'戌','庚':'亥','辛':'子','壬':'丑','癸':'寅'};
+  const BR = {'子':0,'丑':1,'寅':2,'卯':3,'辰':4,'巳':5,'午':6,'未':7,'申':8,'酉':9,'戌':10,'亥':11};
+  if (tiandeTable[yearGan]) stars[BR[tiandeTable[yearGan]]].push({name:'天德', type:'helper'});
+  if (yuedeTable[yearGan]) stars[BR[yuedeTable[yearGan]]].push({name:'月德', type:'helper'});
+
+  // 紅鸞天喜（按年支）
+  const hongluanIdx = (3 - yearZhi + 12) % 12; // 卯起子逆數
+  const tianxiIdx = (hongluanIdx + 6) % 12;
+  stars[hongluanIdx].push({name:'紅鸞', type:'flower'});
+  stars[tianxiIdx].push({name:'天喜', type:'flower'});
+
+  // 天姚天刑（按月）
+  const tianyaoIdx = (1 + lunarMonth - 1) % 12; // 丑起正月順數
+  const tianxingIdx = (9 + lunarMonth - 1) % 12; // 酉起正月順數
+  stars[tianyaoIdx].push({name:'天姚', type:'flower'});
+  stars[tianxingIdx].push({name:'天刑', type:'adjective'});
+
+  // 華蓋咸池（按年支）
+  const hgTable = {'寅':10,'午':10,'戌':10,'申':4,'子':4,'辰':4,'巳':1,'丑':1,'酉':1,'亥':7,'卯':7,'未':7};
+  const xcTable = {'寅':3,'午':3,'戌':3,'申':9,'子':9,'辰':9,'巳':6,'丑':6,'酉':6,'亥':0,'卯':0,'未':0};
+  const yz = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'][yearZhi];
+  if (hgTable[yz] !== undefined) stars[hgTable[yz]].push({name:'華蓋', type:'adjective'});
+  if (xcTable[yz] !== undefined) stars[xcTable[yz]].push({name:'咸池', type:'flower'});
+
+  // 孤辰寡宿（按年支）
+  const guTable = {'寅':5,'卯':5,'辰':5,'巳':8,'午':8,'未':8,'申':11,'酉':11,'戌':11,'亥':2,'子':2,'丑':2};
+  const guaTable = {'寅':1,'卯':1,'辰':1,'巳':4,'午':4,'未':4,'申':7,'酉':7,'戌':7,'亥':10,'子':10,'丑':10};
+  if (guTable[yz] !== undefined) stars[guTable[yz]].push({name:'孤辰', type:'adjective'});
+  if (guaTable[yz] !== undefined) stars[guaTable[yz]].push({name:'寡宿', type:'adjective'});
+
+  // 天馬（按年支）- 只在四馬地
+  const maTable = {'寅':8,'午':8,'戌':8,'申':2,'子':2,'辰':2,'巳':11,'丑':11,'酉':11,'亥':5,'卯':5,'未':5};
+  if (maTable[yz] !== undefined) stars[maTable[yz]].push({name:'天馬', type:'adjective'});
+
+  // 龍池鳳閣（按年支）
+  stars[(4 + yearZhi) % 12].push({name:'龍池', type:'adjective'});
+  stars[(10 - yearZhi + 12) % 12].push({name:'鳳閣', type:'adjective'});
+
+  // 天哭天虛（按年支）
+  stars[(6 - yearZhi + 12) % 12].push({name:'天哭', type:'adjective'});
+  stars[(6 + yearZhi) % 12].push({name:'天虛', type:'adjective'});
+
+  // 天才天壽（按命宮、身宮 + 年支）
+  stars[(soulIndex + yearZhi) % 12].push({name:'天才', type:'adjective'});
+  stars[(bodyIndex + yearZhi) % 12].push({name:'天壽', type:'adjective'});
+
   return stars;
 }
 
-// ===================== 主流程 =====================
+// 十二宮描述
+const ZW_PALACE_DESC = {
+  '命宮': '命宮代表先天性格、外貌、能力、整體命運格局。是命盤的核心，決定一個人的基本特質與人生方向。',
+  '父母': '父母宮代表與父母的緣分、上司關係、遺傳特質、教育背景。也反映父母的健康與事業狀況。',
+  '福德': '福德宮代表精神生活、興趣嗜好、內心世界、祖德福蔭。反映一個人的幸福感與心靈狀態。',
+  '田宅': '田宅宮代表不動產、居住環境、家庭根基、庫藏財。也反映與家人的關係和家庭運勢。',
+  '官祿': '官祿宮代表事業運、工作能力、考試運、社會地位。是判斷事業發展的重要宮位。',
+  '交友': '交友宮代表下屬、朋友、同事關係、社交能力。也反映受人擁戴的程度。',
+  '遷移': '遷移宮代表外出運、旅行、貴人、社會環境。也反映在外的適應能力和際遇。',
+  '疾厄': '疾厄宮代表健康狀況、疾病類型、意外災厄。是判斷身體狀況的重要宮位。',
+  '財帛': '財帛宮代表財運、理財能力、收入來源、賺錢方式。反映一個人的經濟狀況。',
+  '子女': '子女宮代表子女緣分、生育狀況、性生活、學生緣分。也反映與晚輩的關係。',
+  '夫妻': '夫妻宮代表婚姻感情、配偶特質、戀愛運勢。是判斷感情生活的重要宮位。',
+  '兄弟': '兄弟宮代表兄弟姐妹緣分、同事朋友關係、合夥運勢。也反映同輩之間的互動。'
+};
 
 function zwCalculate() {
   const year = +document.getElementById('zwYear').value;
@@ -302,10 +364,20 @@ function zwDisplay(palaces, year, month, day, hour, gender, lunar, wxjName, ziwe
   const ms = mp.stars.filter(s => s.type === 'main');
   a += `<p><strong>命宮主星：</strong>${ms.map(s=>s.name).join('、')||'空宮'}</p>`;
   if (ms.length) for (const s of ms) a += `<p><strong>${s.name}：</strong>${ZW_MEANING[s.name]||''}</p>`;
-  a += '<h4>十二宮星曜</h4>';
+
+  a += '<h4>十二宮詳解</h4>';
   for (const p of palaces) {
-    const list = p.stars.length ? p.stars.map(s=>s.name).join('、') : '空宮';
-    a += `<p><strong>${p.name}（${p.branch}）：</strong>${list}</p>`;
+    const mainStars = p.stars.filter(s => s.type === 'main').map(s => s.name);
+    const auxStars = p.stars.filter(s => s.type === 'aux' || s.type === 'helper' || s.type === 'flower').map(s => s.name);
+    const desc = ZW_PALACE_DESC[p.name] || '';
+
+    a += `<div class="palace-analysis">`;
+    a += `<h5>${p.name}（${p.branch}）${p.isMing ? ' ★命宮' : ''}${p.isShen ? ' ★身宮' : ''}</h5>`;
+    a += `<p class="palace-desc">${desc}</p>`;
+    if (mainStars.length) a += `<p><strong>主星：</strong>${mainStars.join('、')}</p>`;
+    if (auxStars.length) a += `<p><strong>輔星：</strong>${auxStars.join('、')}</p>`;
+    if (!mainStars.length && !auxStars.length) a += `<p><em>空宮（無主星輔星）</em></p>`;
+    a += `</div>`;
   }
   document.getElementById('zwAnalysis').innerHTML = a;
 }
