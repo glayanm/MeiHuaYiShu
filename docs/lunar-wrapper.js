@@ -1,9 +1,8 @@
-// Wrapper for reference lunar.js (cubshuang/ZiWeiDouShu)
-// Preserves reference Lunar() function and adds compatibility object
+// Save reference Lunar() function before overwriting
+var _refLunarFn = Lunar;
 
 function solarToLunarSW(yy, mm, dd) {
-  // Call the reference Lunar() function (defined in lunar-ref.js)
-  Lunar(0, yy, mm, dd);
+  _refLunarFn(0, yy, mm, dd);
   return {
     year: lunar.y,
     month: lunar.m,
@@ -24,9 +23,7 @@ var LunarDayNames = [
   '廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'
 ];
 
-// Overwrite Lunar with compatibility object
-// The reference Lunar() function is no longer needed after this
-var _refLunar = Lunar; // save reference function
+// Compatibility object - overwrites the Lunar function
 var Lunar = {
   TIANGAN: GanGB,
   DIZHI: ZhiGB,
@@ -36,7 +33,6 @@ var Lunar = {
   SOLAR_TERMS_NAMES: ['小寒','大寒','立春','雨水','驚蟄','春分','清明','穀雨','立夏','小滿','芒種','夏至','小暑','大暑','立秋','處暑','白露','秋分','寒露','霜降','立冬','小雪','大雪','冬至'],
   solarToLunar: solarToLunarSW,
   getSolarTermDay: function(year, idx) {
-    // Approximate solar term day
     var base = [6,20,4,19,6,21,5,20,6,21,6,22,7,23,7,23,8,23,8,23,7,22,7,22];
     var d = base[idx] + Math.floor((year - 2000) * 0.2422);
     return Math.min(d, 28 + (idx % 2 === 0 ? 0 : 1));
