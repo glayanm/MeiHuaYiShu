@@ -132,6 +132,11 @@ body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--t1);
 .zw-s-name{font-size:.72rem;white-space:nowrap}
 .zw-sm{color:var(--gold);font-weight:700}
 .zw-sa{color:var(--good)}
+.zw-bri{font-size:.6rem;padding:0 3px;border-radius:3px;margin-left:2px;vertical-align:middle;font-weight:600}
+.bri-best{background:rgba(241,196,15,.2);color:var(--great)}
+.bri-good{background:rgba(46,204,113,.15);color:var(--good)}
+.bri-mid{background:rgba(149,165,166,.12);color:var(--neutral)}
+.bri-bad{background:rgba(231,76,60,.15);color:var(--bad)}
 .zw-s-bri{font-size:.55rem;padding:0 3px;border-radius:2px;white-space:nowrap}
 .bri-best{background:rgba(241,196,15,.2);color:var(--great)}
 .bri-good{background:rgba(46,204,113,.15);color:var(--good)}

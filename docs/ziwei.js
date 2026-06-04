@@ -200,6 +200,45 @@ const ZW_MEANING={
   '破軍':'耗星，主破壞、變動、先破後立。坐命者勇於改變。'
 };
 
+// 星曜亮度（依寅宮起排列）：廟>旺>得>利>平>不>陷
+// 來源: iztro STARS_INFO
+const ZW_BRIGHTNESS = {
+  '紫微': ['旺','旺','得','旺','廟','廟','旺','旺','得','旺','平','廟'],
+  '天機': ['得','旺','利','平','廟','陷','得','旺','利','平','廟','陷'],
+  '太陽': ['旺','廟','旺','旺','旺','得','得','陷','不','陷','陷','不'],
+  '武曲': ['得','利','廟','平','旺','廟','得','利','廟','平','旺','廟'],
+  '天同': ['利','平','平','廟','陷','不','旺','平','平','廟','旺','不'],
+  '廉貞': ['廟','平','利','陷','平','利','廟','平','利','陷','平','利'],
+  '天府': ['廟','得','廟','得','旺','廟','得','旺','廟','得','廟','廟'],
+  '太陰': ['旺','陷','陷','陷','不','不','利','不','旺','廟','廟','廟'],
+  '貪狼': ['平','利','廟','陷','旺','廟','平','利','廟','陷','旺','廟'],
+  '巨門': ['廟','廟','陷','旺','旺','不','廟','廟','陷','旺','旺','不'],
+  '天相': ['廟','陷','得','得','廟','得','廟','陷','得','得','廟','廟'],
+  '天梁': ['廟','廟','廟','陷','廟','旺','陷','得','廟','陷','廟','旺'],
+  '七殺': ['廟','旺','廟','平','旺','廟','廟','廟','廟','平','旺','廟'],
+  '破軍': ['得','陷','旺','平','廟','旺','得','陷','旺','平','廟','旺'],
+  '文昌': ['陷','利','得','廟','陷','利','得','廟','陷','利','得','廟'],
+  '文曲': ['平','旺','得','廟','陷','旺','得','廟','陷','旺','得','廟']
+};
+
+const ZW_BRI_LABELS = {'miao':'廟','wang':'旺','de':'得','li':'利','ping':'平','bu':'不','xian':'陷'};
+
+function getBrightness(starName, branchIdx) {
+  const arr = ZW_BRIGHTNESS[starName];
+  if (!arr) return '';
+  // branchIdx 是地支索引(0=子...11=亥)，亮度表以寅(2)為起點
+  const briIdx = ((branchIdx - 2) % 12 + 12) % 12;
+  return arr[briIdx] || '';
+}
+
+function getBriClass(bri) {
+  if (bri === '廟' || bri === '旺') return 'bri-best';
+  if (bri === '得' || bri === '利') return 'bri-good';
+  if (bri === '平') return 'bri-mid';
+  if (bri === '不' || bri === '陷') return 'bri-bad';
+  return '';
+}
+
 function zwDisplay(palaces, year, month, day, hour, gender, lunar, wxjName, ziweiIdx, tianfuIdx, soulIndex, bodyIndex) {
   document.getElementById('zwResult').classList.remove('hidden');
 
@@ -244,7 +283,10 @@ function zwDisplay(palaces, year, month, day, hour, gender, lunar, wxjName, ziwe
     let starHtml = '';
     for (const s of p.stars) {
       const cls = s.type === 'main' ? 'zw-sm' : 'zw-sa';
-      starHtml += `<div class="zw-s-main"><span class="zw-s-name ${cls}">${s.name}</span></div>`;
+      const bri = getBrightness(s.name, cell.br);
+      const briClass = getBriClass(bri);
+      const briTag = bri ? `<span class="zw-bri ${briClass}">${bri}</span>` : '';
+      starHtml += `<div class="zw-s-main"><span class="zw-s-name ${cls}">${s.name}</span>${briTag}</div>`;
     }
     const tag = p.isMing ? '<span class="zw-tag">命</span>' : p.isShen ? '<span class="zw-tag">身</span>' : '';
     html += `<div class="zw-cell${p.isMing?' zw-ming':''}" style="grid-row:${cell.r};grid-column:${cell.c}">
