@@ -1,158 +1,213 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>梅花易數 - 易經卜卦</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>小安命理網</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <div class="app-layout">
-        <aside class="panel-left">
-            <header class="header">
-                <div class="header-brand">
-                    <img src="images/logo.png" alt="梅花易數" class="logo-img" />
-                    <div class="header-text">
-                        <h1 class="title">梅花易數</h1>
-                        <p class="subtitle">易經占卜 · 擲骰問卦</p>
-                    </div>
-                </div>
-            </header>
-
-            <section class="intro">
-                <p>誠心默念所問之事，點擊按鈕進行卜卦。</p>
-            </section>
-
-            <div class="dice-area">
-                <div class="question-group">
-                    <label class="question-label" for="questionInput">問事內容</label>
-                    <input type="text" id="questionInput" class="question-input" placeholder="例：近期事業發展如何？" maxlength="50" />
-                </div>
-
-                <div class="dice-group">
-                    <h3 class="group-title">上卦（外卦）</h3>
-                    <div class="dice-row">
-                        <div class="dice binary-dice" id="ud1"><div class="dice-face"></div></div>
-                        <div class="dice binary-dice" id="ud2"><div class="dice-face"></div></div>
-                        <div class="dice binary-dice" id="ud3"><div class="dice-face"></div></div>
-                    </div>
-                    <div class="dice-hint">1＝陽 ━━━　2＝陰 ━ ━</div>
-                </div>
-
-                <div class="dice-group">
-                    <h3 class="group-title">下卦（內卦）</h3>
-                    <div class="dice-row">
-                        <div class="dice binary-dice" id="ld1"><div class="dice-face"></div></div>
-                        <div class="dice binary-dice" id="ld2"><div class="dice-face"></div></div>
-                        <div class="dice binary-dice" id="ld3"><div class="dice-face"></div></div>
-                    </div>
-                    <div class="dice-hint">1＝陽 ━━━　2＝陰 ━ ━</div>
-                </div>
-
-                <div class="dice-group">
-                    <h3 class="group-title">動爻</h3>
-                    <div class="dice-row dice-row-single">
-                        <div class="dice standard-dice" id="md"><div class="dice-face"></div></div>
-                    </div>
-                    <div class="dice-hint">六面骰：第幾爻變動</div>
-                </div>
-
-                <button id="btnDivine" class="btn-divine" onclick="startDivination()">誠心問卦</button>
-                <button id="btnHistory" class="btn-history" onclick="toggleHistory()">卦象紀錄</button>
-            </div>
-        </aside>
-
-        <section class="panel-right">
-            <div class="history-panel hidden" id="historyPanel">
-                <div class="history-header">
-                    <h3>卦象紀錄</h3>
-                    <button class="btn-close-history" onclick="toggleHistory()">✕</button>
-                </div>
-                <div class="history-list" id="historyList">
-                    <p class="history-empty">尚無紀錄</p>
-                </div>
-            </div>
-
-            <div class="placeholder" id="placeholder">
-                <div class="placeholder-icon">☰</div>
-                <p>誠心問卦後，結果將顯示於此</p>
-            </div>
-
-            <div class="result-content hidden" id="resultContent">
-                <div class="result-question" id="resultQuestion"></div>
-
-                <div class="hexagram-display">
-                    <div class="hexagram-card original">
-                        <h3>本卦</h3>
-                        <div class="hexagram-symbol" id="originalSymbol"></div>
-                        <div class="hexagram-name" id="originalName"></div>
-                        <div class="hexagram-trigrams" id="originalTrigrams"></div>
-                        <div class="fortune-badge" id="originalFortune"></div>
-                    </div>
-                    <div class="arrow">→</div>
-                    <div class="hexagram-card changed">
-                        <h3>變卦</h3>
-                        <div class="hexagram-symbol" id="changedSymbol"></div>
-                        <div class="hexagram-name" id="changedName"></div>
-                        <div class="hexagram-trigrams" id="changedTrigrams"></div>
-                        <div class="fortune-badge" id="changedFortune"></div>
-                    </div>
-                </div>
-
-                <div class="moving-line-info">動爻：第 <strong id="movingLineNum"></strong> 爻</div>
-
-                <div class="interp-grid">
-                    <div class="interp-section"><h4>卦象解析</h4><p id="hexDescription"></p></div>
-                    <div class="interp-section"><h4>白話解說</h4><p id="hexPlainExplanation"></p></div>
-                    <div class="interp-section"><h4>易經原文</h4><p class="classic-text" id="hexClassicText"></p></div>
-                    <div class="interp-section"><h4>行動建議</h4><p id="hexAdvice"></p></div>
-                </div>
-
-                <div id="changedInterpretation" class="interp-grid" style="display:none;">
-                    <div class="interp-section"><h4>變卦解析</h4><p id="changedDescription"></p></div>
-                    <div class="interp-section"><h4>變卦白話解說</h4><p id="changedPlainExplanation"></p></div>
-                    <div class="interp-section"><h4>變卦行動建議</h4><p id="changedAdvice"></p></div>
-                </div>
-
-                <details class="verification-panel">
-                    <summary>各家梅花易數驗證</summary>
-                    <div class="verification-content">
-                        <div class="verify-section">
-                            <h4>一、骰子 → 爻線（異數骰法）</h4>
-                            <div class="verify-steps" id="verifyDiceSteps"></div>
-                        </div>
-                        <div class="verify-section">
-                            <h4>二、爻線 → 卦象（先天八卦序）</h4>
-                            <div class="verify-steps" id="verifyTrigramMap"></div>
-                        </div>
-                        <div class="verify-section">
-                            <h4>三、先天八卦對照表</h4>
-                            <table class="mapping-table">
-                                <thead><tr><th>序</th><th>卦</th><th>象</th><th>二進位</th><th>爻象</th></tr></thead>
-                                <tbody>
-                                    <tr><td>1</td><td>乾</td><td>天</td><td>111</td><td>━━━ ━━━ ━━━</td></tr>
-                                    <tr><td>2</td><td>兌</td><td>澤</td><td>011</td><td>━ ━ ━━━ ━━━</td></tr>
-                                    <tr><td>3</td><td>離</td><td>火</td><td>101</td><td>━━━ ━ ━ ━━━</td></tr>
-                                    <tr><td>4</td><td>震</td><td>雷</td><td>001</td><td>━ ━ ━ ━ ━━━</td></tr>
-                                    <tr><td>5</td><td>巽</td><td>風</td><td>110</td><td>━━━ ━━━ ━ ━</td></tr>
-                                    <tr><td>6</td><td>坎</td><td>水</td><td>010</td><td>━ ━ ━━━ ━ ━</td></tr>
-                                    <tr><td>7</td><td>艮</td><td>山</td><td>100</td><td>━━━ ━ ━ ━ ━</td></tr>
-                                    <tr><td>8</td><td>坤</td><td>地</td><td>000</td><td>━ ━ ━ ━ ━ ━</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </details>
-            </div>
-        </section>
+<nav class="top-nav">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <img src="images/logo.png" alt="" class="nav-logo"/>
+      <span class="nav-title">小安命理網</span>
     </div>
+    <div class="nav-menu" id="navMenu">
+      <a class="nav-link active" data-feat="meihua" onclick="switchFeature('meihua')">梅花易數</a>
+      <a class="nav-link" data-feat="ziwei" onclick="switchFeature('ziwei')">紫微命盤</a>
+      <a class="nav-link" data-feat="jiugong" onclick="switchFeature('jiugong')">九宮飛星</a>
+      <a class="nav-link" data-feat="nongli" onclick="switchFeature('nongli')">農民曆</a>
+    </div>
+    <button class="nav-toggle" onclick="document.getElementById('navMenu').classList.toggle('open')">☰</button>
+  </div>
+</nav>
 
-    <footer class="footer"><p>梅花易數 · 易經卜卦系統</p></footer>
-    <script src="hexagram-data.js"></script>
-    <script src="app.js"></script>
+<main class="main-content">
+
+<!-- ==================== 梅花易數 ==================== -->
+<section class="feature-panel active" id="feat-meihua">
+<div class="meihua-layout">
+  <aside class="meihua-left">
+    <div class="dice-area">
+      <div class="question-group">
+        <label class="question-label" for="mhQuestion">問事內容</label>
+        <input type="text" id="mhQuestion" class="question-input" placeholder="例：近期事業發展如何？" maxlength="50"/>
+      </div>
+      <div class="dice-group">
+        <h3 class="group-title">上卦（外卦）</h3>
+        <div class="dice-row">
+          <div class="dice binary-dice" id="ud1"><div class="dice-face"></div></div>
+          <div class="dice binary-dice" id="ud2"><div class="dice-face"></div></div>
+          <div class="dice binary-dice" id="ud3"><div class="dice-face"></div></div>
+        </div>
+        <div class="dice-hint">1＝陽 ━━━　2＝陰 ━ ━</div>
+      </div>
+      <div class="dice-group">
+        <h3 class="group-title">下卦（內卦）</h3>
+        <div class="dice-row">
+          <div class="dice binary-dice" id="ld1"><div class="dice-face"></div></div>
+          <div class="dice binary-dice" id="ld2"><div class="dice-face"></div></div>
+          <div class="dice binary-dice" id="ld3"><div class="dice-face"></div></div>
+        </div>
+        <div class="dice-hint">1＝陽 ━━━　2＝陰 ━ ━</div>
+      </div>
+      <div class="dice-group">
+        <h3 class="group-title">動爻</h3>
+        <div class="dice-row dice-row-single">
+          <div class="dice standard-dice" id="md"><div class="dice-face"></div></div>
+        </div>
+        <div class="dice-hint">六面骰：第幾爻變動</div>
+      </div>
+      <button id="btnDivine" class="btn-primary" onclick="mhStart()">誠心問卦</button>
+      <button class="btn-secondary" onclick="mhToggleHistory()">卦象紀錄</button>
+    </div>
+  </aside>
+  <section class="meihua-right">
+    <div class="mh-history-panel hidden" id="mhHistoryPanel">
+      <div class="panel-header"><h3>卦象紀錄</h3><button class="btn-close" onclick="mhToggleHistory()">✕</button></div>
+      <div class="history-list" id="mhHistoryList"><p class="empty-text">尚無紀錄</p></div>
+    </div>
+    <div class="placeholder" id="mhPlaceholder"><div class="placeholder-icon">☰</div><p>誠心問卦後，結果將顯示於此</p></div>
+    <div class="result-content hidden" id="mhResult">
+      <div class="result-question" id="mhRQ"></div>
+      <div class="hex-display">
+        <div class="hex-card"><h3>本卦</h3><div class="hex-symbol" id="mhOS"></div><div class="hex-name" id="mhON"></div><div class="hex-tri" id="mhOT"></div><div class="fortune" id="mhOF"></div></div>
+        <div class="hex-arrow">→</div>
+        <div class="hex-card"><h3>變卦</h3><div class="hex-symbol" id="mhCS"></div><div class="hex-name" id="mhCN"></div><div class="hex-tri" id="mhCT"></div><div class="fortune" id="mhCF"></div></div>
+      </div>
+      <div class="moving-line-info">動爻：第 <strong id="mhML"></strong> 爻</div>
+      <div class="interp-grid">
+        <div class="interp-box"><h4>卦象解析</h4><p id="mhDesc"></p></div>
+        <div class="interp-box"><h4>白話解說</h4><p id="mhPlain"></p></div>
+        <div class="interp-box"><h4>易經原文</h4><p class="classic" id="mhClassic"></p></div>
+        <div class="interp-box"><h4>行動建議</h4><p id="mhAdvice"></p></div>
+      </div>
+      <div class="interp-grid hidden" id="mhChangedGrid">
+        <div class="interp-box"><h4>變卦解析</h4><p id="mhCDesc"></p></div>
+        <div class="interp-box"><h4>變卦白話解說</h4><p id="mhCPlain"></p></div>
+        <div class="interp-box"><h4>變卦行動建議</h4><p id="mhCAdvice"></p></div>
+      </div>
+      <details class="verify-panel"><summary>各家梅花易數驗證</summary>
+        <div class="verify-content">
+          <div class="verify-sec"><h4>一、骰子 → 爻線</h4><div id="mhV1"></div></div>
+          <div class="verify-sec"><h4>二、爻線 → 卦象</h4><div id="mhV2"></div></div>
+        </div>
+      </details>
+    </div>
+  </section>
+</div>
+</section>
+
+<!-- ==================== 紫微命盤 ==================== -->
+<section class="feature-panel" id="feat-ziwei">
+<div class="zw-container">
+  <h2 class="section-title">紫微命盤</h2>
+  <p class="section-desc">輸入出生年月日時，推算紫微斗數命盤。支援北派、南派主要星曜排列。</p>
+  <div class="form-card">
+    <div class="form-grid">
+      <div class="form-group"><label>出生年（西元）</label><input type="number" id="zwYear" min="1920" max="2100" value="1990"/></div>
+      <div class="form-group"><label>出生月（西曆）</label><input type="number" id="zwMonth" min="1" max="12" value="6"/></div>
+      <div class="form-group"><label>出生日</label><input type="number" id="zwDay" min="1" max="31" value="15"/></div>
+      <div class="form-group"><label>出生時辰</label>
+        <select id="zwHour">
+          <option value="0">子時 (23:00-01:00)</option>
+          <option value="1">丑時 (01:00-03:00)</option>
+          <option value="2">寅時 (03:00-05:00)</option>
+          <option value="3">卯時 (05:00-07:00)</option>
+          <option value="4">辰時 (07:00-09:00)</option>
+          <option value="5">巳時 (09:00-11:00)</option>
+          <option value="6" selected>午時 (11:00-13:00)</option>
+          <option value="7">未時 (13:00-15:00)</option>
+          <option value="8">申時 (15:00-17:00)</option>
+          <option value="9">酉時 (17:00-19:00)</option>
+          <option value="10">戌時 (19:00-21:00)</option>
+          <option value="11">亥時 (21:00-23:00)</option>
+        </select>
+      </div>
+      <div class="form-group"><label>性別</label>
+        <select id="zwGender"><option value="M">男</option><option value="F">女</option></select>
+      </div>
+      <div class="form-group form-actions"><button class="btn-primary" onclick="zwCalculate()">排出命盤</button></div>
+    </div>
+  </div>
+  <div class="zw-result hidden" id="zwResult">
+    <div class="zw-info" id="zwInfo"></div>
+    <div class="zw-grid" id="zwGrid"></div>
+    <div class="zw-analysis" id="zwAnalysis"></div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== 九宮飛星 ==================== -->
+<section class="feature-panel" id="feat-jiugong">
+<div class="jg-container">
+  <h2 class="section-title">九宮飛星</h2>
+  <p class="section-desc">查看2000-2100年九宮飛星圖，方便風水布局參考。</p>
+  <div class="form-card">
+    <div class="form-grid jg-form">
+      <div class="form-group"><label>查看模式</label>
+        <select id="jgMode" onchange="jgUpdateMode()">
+          <option value="year">年飛星</option>
+          <option value="month">月飛星</option>
+          <option value="day">日飛星</option>
+        </select>
+      </div>
+      <div class="form-group"><label>年份</label>
+        <select id="jgYear" onchange="jgRender()"></select>
+      </div>
+      <div class="form-group jg-month-group" id="jgMonthGroup"><label>月份</label>
+        <select id="jgMonth" onchange="jgRender()"></select>
+      </div>
+      <div class="form-group jg-day-group hidden" id="jgDayGroup"><label>日期</label>
+        <input type="date" id="jgDay" min="2000-01-01" max="2100-12-31" onchange="jgRender()"/>
+      </div>
+    </div>
+  </div>
+  <div class="jg-result" id="jgResult">
+    <div class="jg-grid-wrap">
+      <h3 class="jg-grid-title" id="jgGridTitle"></h3>
+      <div class="jg-grid" id="jgGrid"></div>
+    </div>
+    <div class="jg-legend" id="jgLegend"></div>
+    <div class="jg-analysis" id="jgAnalysis"></div>
+  </div>
+</div>
+</section>
+
+<!-- ==================== 農民曆 ==================== -->
+<section class="feature-panel" id="feat-nongli">
+<div class="nl-container">
+  <h2 class="section-title">農民曆</h2>
+  <p class="section-desc">2000-2100年農民曆，包含農曆日期、節氣、宜忌事項。</p>
+  <div class="form-card">
+    <div class="form-grid nl-form">
+      <div class="form-group"><label>年份</label><select id="nlYear" onchange="nlRender()"></select></div>
+      <div class="form-group"><label>月份</label><select id="nlMonth" onchange="nlRender()"></select></div>
+    </div>
+  </div>
+  <div class="nl-result" id="nlResult">
+    <div class="nl-header" id="nlHeader"></div>
+    <div class="nl-weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+    <div class="nl-grid" id="nlGrid"></div>
+    <div class="nl-detail hidden" id="nlDetail"></div>
+  </div>
+</div>
+</section>
+
+</main>
+
+<footer class="site-footer"><p>小安命理網 · 梅花易數 · 紫微命盤 · 九宮飛星 · 農民曆</p></footer>
+
+<script src="lunar.js"></script>
+<script src="meihua.js"></script>
+<script src="ziwei.js"></script>
+<script src="jiugong.js"></script>
+<script src="nongli.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
