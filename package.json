@@ -1,0 +1,26 @@
+{
+  "name": "MeiHuaYiShu",
+  "version": "1.0.0",
+  "description": "梅花異數 AI 開發",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glayanm/MeiHuaYiShu.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/glayanm/MeiHuaYiShu/issues"
+  },
+  "homepage": "https://github.com/glayanm/MeiHuaYiShu#readme",
+  "dependencies": {
+    "lunar-javascript": "^1.7.7"
+  }
+}
